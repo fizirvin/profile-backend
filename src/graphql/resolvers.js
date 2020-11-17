@@ -11,13 +11,13 @@ import Password from '../models/password'
 
 const graphqlResolver = {
   login: async function ({ email, password }) {
-    const { _id, firstName } = await User.findOne({ email })
-    if (!_id) {
+    const user = await User.findOne({ email })
+    if (!user) {
       const error = new Error('Email is incorrect.')
       error.code = 401
       throw error
     }
-    const existingPassword = await Password.findOne({ userId: _id })
+    const existingPassword = await Password.findOne({ userId: user._id })
     const isEqual = await bcrypt.compare(password, existingPassword.password)
     if (!isEqual) {
       const error = new Error('Password is incorrect.')
@@ -26,13 +26,13 @@ const graphqlResolver = {
     }
     const token = jwt.sign(
       {
-        userId: _id.toString(),
-        firstName
+        userId: user._id.toString(),
+        firstName: user.firstName
       },
       'somesupersecretsecret',
       { expiresIn: '1h' }
     )
-    return { token: token, userId: _id, firstName }
+    return { token: token, userId: user._id, firstName: user.firstName }
   },
   users: async function () {
     return await User.find()

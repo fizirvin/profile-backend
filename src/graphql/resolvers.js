@@ -10,10 +10,10 @@ import User from '../models/user'
 import Password from '../models/password'
 
 const graphqlResolver = {
-  login: async function ({ name, password }) {
-    const { _id, firstName } = await User.findOne({ name: name })
+  login: async function ({ email, password }) {
+    const { _id, firstName } = await User.findOne({ email })
     if (!_id) {
-      const error = new Error('User is incorrect.')
+      const error = new Error('Email is incorrect.')
       error.code = 401
       throw error
     }

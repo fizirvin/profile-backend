@@ -5,7 +5,7 @@ module.exports = buildSchema(`
     scalar Date
 
     type RootQuery {
-        login(name: String, password: String): AuthData!
+        login(email: String, password: String): AuthData!
         users: [User]
     }
 
